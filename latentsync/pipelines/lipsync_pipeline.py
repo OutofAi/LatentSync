@@ -65,7 +65,7 @@ class LipsyncPipeline(DiffusionPipeline):
             
         if scheduler == None:
             BASE_DIR = Path(__file__).resolve().parent
-            config_dir = (BASE_DIR / ".." / ".." / "configs").resolve()
+            config_dir = (BASE_DIR / ".." / "configs").resolve()
             scheduler = DDIMScheduler.from_pretrained(config_dir)
 
         if unet == None:
