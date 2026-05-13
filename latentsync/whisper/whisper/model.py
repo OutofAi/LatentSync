@@ -11,9 +11,20 @@ from torch import nn
 from .transcribe import transcribe as transcribe_function
 from .decoding import detect_language as detect_language_function, decode as decode_function
 
-from flash_attn_interface import flash_attn_func
+try:
+    import flash_attn_interface
+    print('using flash_attn_interface')
+    FLASH_ATTN_3_AVAILABLE = True
+except ModuleNotFoundError:
+    FLASH_ATTN_3_AVAILABLE = False
 
-
+try:
+    import flash_attn
+    print('using flash_attn')
+    FLASH_ATTN_2_AVAILABLE = True
+except ModuleNotFoundError:
+    FLASH_ATTN_2_AVAILABLE = False
+    
 @dataclass
 class ModelDimensions:
     n_mels: int
