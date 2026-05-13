@@ -15,7 +15,20 @@ from diffusers.models.attention import Attention as CrossAttention, FeedForward,
 
 from einops import rearrange
 from .utils import zero_module
-import flash_attn_interface
+
+try:
+    import flash_attn_interface
+    print('using flash_attn_interface')
+    FLASH_ATTN_3_AVAILABLE = True
+except ModuleNotFoundError:
+    FLASH_ATTN_3_AVAILABLE = False
+
+try:
+    import flash_attn
+    print('using flash_attn')
+    FLASH_ATTN_2_AVAILABLE = True
+except ModuleNotFoundError:
+    FLASH_ATTN_2_AVAILABLE = False
 
 print(f'torch:{torch.__version__}')
 
@@ -93,11 +106,19 @@ class FlashAttnProcessor2_0:
 
         # NOTE: attention_mask is ignored here; for FlashAttn masking you’d need
         # a different path (varlen or explicit mask handling).
-        hidden_states = flash_attn_interface.flash_attn_func(
-            q,
-            k,
-            v
-        )
+
+        if FLASH_ATTN_3_AVAILABLE:
+            hidden_states = flash_attn_interface.flash_attn_func(
+                q,
+                k,
+                v
+            )
+        elif FLASH_ATTN_2_AVAILABLE:
+            hidden_states = flash_attn.flash_attn_func(
+                q,
+                k,
+                v
+            )
         # hidden_states: [B, S, H, D]
 
         # merge heads back: [B, S, H*D]
