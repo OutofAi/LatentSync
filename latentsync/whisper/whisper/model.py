@@ -12,14 +12,14 @@ from .transcribe import transcribe as transcribe_function
 from .decoding import detect_language as detect_language_function, decode as decode_function
 
 try:
-    import flash_attn_interface
+    from flash_attn_interface import flash_attn_func
     print('using flash_attn_interface')
     FLASH_ATTN_3_AVAILABLE = True
 except ModuleNotFoundError:
     FLASH_ATTN_3_AVAILABLE = False
 
 try:
-    import flash_attn
+    from flash_attn import flash_attn_func
     print('using flash_attn')
     FLASH_ATTN_2_AVAILABLE = True
 except ModuleNotFoundError:
